@@ -44,10 +44,24 @@ function processCommand(command) {
             case 'status':
                 showPuzzleStatus();
                 break;
+            case 'help':
+                showHelp();
+                break;
             default:
-                updateTerminal('Available commands: solve [puzzleId], hint [puzzleId], status');
+                updateTerminal('Unknown command. Type "help" for a list of commands.');
         }
     }
+}
+
+// Function to provide help instructions
+function showHelp() {
+    updateTerminal(`
+    Available Commands:
+    - solve [puzzleId]: Attempt to solve the specified puzzle.
+    - hint [puzzleId]: Get a hint for the specified puzzle.
+    - status: Show the status of all puzzles.
+    - help: Show this help message.
+    `);
 }
 
 // Attempt to solve a puzzle based on user input
@@ -55,25 +69,26 @@ function attemptSolvePuzzle(puzzleId) {
     const puzzle = puzzles.find(p => p.id === puzzleId);
     if (puzzle) {
         if (puzzle.solved) {
-            updateTerminal(`Puzzle ${puzzleId} has already been solved.`);
+            updateTerminal(`Puzzle ${puzzleId} has already been solved. Choose another puzzle.`);
         } else {
-            awaitingSolutionForPuzzleId = puzzleId; // Set the state to expect a solution for this puzzle
-            updateTerminal(`Solve ${puzzleId}: ${puzzle.question}`);
+            awaitingSolutionForPuzzleId = puzzleId; // Set to expect solution
+            updateTerminal(`Solve ${puzzleId}: ${puzzle.question}\n(Type your answer and press Enter)`);
         }
     } else {
-        updateTerminal(`No puzzle found with ID: ${puzzleId}.`);
+        updateTerminal(`No puzzle found with ID: ${puzzleId}. Use 'status' to view available puzzles.`);
     }
 }
 
-// Check the user's solution against the correct answer
+// Handling user solution attempts with feedback and next steps
 function checkPuzzleSolution(solution, puzzleId) {
     const puzzle = puzzles.find(p => p.id === puzzleId);
     if (puzzle && solution === puzzle.solution) {
         puzzle.solved = true;
-        updateTerminal(`Correct! Puzzle ${puzzleId} solved.`);
+        updateTerminal(`Correct! Puzzle ${puzzleId} solved. Type 'status' to see remaining puzzles or try another.`);
     } else {
-        updateTerminal('Incorrect solution. Try again, or use "hint" for a clue.');
+        updateTerminal(`Incorrect solution for ${puzzleId}. Try again, or use "hint ${puzzleId}" for a clue.`);
     }
+    awaitingSolutionForPuzzleId = null; // Reset the awaiting state
 }
 
 // Provide a hint for a specified puzzle
