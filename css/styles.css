@@ -1,0 +1,31 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: black;
+    color: green;
+    font-family: 'Courier New', monospace;
+}
+#terminal {
+    padding: 10px;
+}
+.inputLine {
+    display: flex;
+    align-items: center;
+}
+.inputLine > div:first-child {
+    padding-right: 5px;
+}
+#input {
+    background: none;
+    color: inherit;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+.cursor {
+    border-right: 2px solid green;
+    animation: blink 1s step-start infinite;
+}
+@keyframes blink {
+    50% { border-color: transparent; }
+}
